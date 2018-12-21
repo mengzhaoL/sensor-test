@@ -8,7 +8,7 @@ class keithley2400c:
         print(instlist.list_resources())
         self.kei2400c=instlist.open_resource("GPIB0::24::INSTR")
         #self.kei2400c=instlist.open_resource("ASRL1::INSTR")
-        self.timedelay=1
+        self.timedelay=0.5
         self.cmpl='100E-6' # global current protection
 
     def testIO(self):
@@ -23,7 +23,7 @@ class keithley2400c:
         self.kei2400c.write(":source:function voltage")
         self.kei2400c.write(":source:voltage:mode fixed")
         vols=self.show_voltage()
-        self.sweep(vols,vol,0.1)
+        self.sweep(vols,vol,1)
         vols=self.show_voltage()
         return vols
 
@@ -67,7 +67,7 @@ class keithley2400c:
             self.kei2400c.write(":source:voltage:level "+str(vol))
             self.kei2400c.write(":sense:current:protection "+self.cmpl)
             self.show_voltage()
-            time.sleep(self.timedelay)
+            time.sleep(self.timedelay*0.2)
 
         self.kei2400c.write(":source:voltage:level "+str(vole))
         self.show_voltage()

@@ -28,8 +28,8 @@ mvols=[]
 current=[]
 
 iStart=int(0*1e3)
-iEnd=int(5.0*1e3)
-iStep=int(0.5*1e3)
+iEnd=int(150.0*1e3)
+iStep=int(1.0*1e3)
 for iBias in range(iStart,iEnd,iStep):
     biasSupply.output_on()
     biasvol=iBias/1000
