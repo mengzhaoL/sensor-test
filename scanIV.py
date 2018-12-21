@@ -39,8 +39,6 @@ for iBias in range(iStart,iEnd,iStep):
     mvols.append(biasSupply.set_voltage(biasvol))
     current.append(biasSupply.display_current())
 
-biasSupply.set_voltage(0*1e3)
-
 print("Bias Vols: "+str(vols))
 print("Measure vols: "+str(mvols))
 print("Current: "+str(current))
@@ -50,3 +48,5 @@ dataarray=np.array(data)
 
 filename="test.csv"
 csv_writer(dataarray.T,filename)
+
+biasSupply.set_voltage(0*1e3)
