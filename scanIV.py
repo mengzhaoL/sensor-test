@@ -33,8 +33,8 @@ iStep=int(0.5*1e3)
 for iBias in range(iStart,iEnd,iStep):
     biasSupply.output_on()
     biasvol=iBias/1000
-    if biasvol>2:
-        break
+	#if biasvol>2:
+    #    break
     vols.append(biasvol)
     mvols.append(biasSupply.set_voltage(biasvol))
     current.append(biasSupply.display_current())
