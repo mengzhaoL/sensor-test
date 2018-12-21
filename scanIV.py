@@ -4,6 +4,8 @@ import time
 import pylab
 import csv
 import numpy as np
+import platform
+import sys
 
 def csv_writer(data,path):
     with open(path,"w") as csv_file:
@@ -12,6 +14,12 @@ def csv_writer(data,path):
         for val in data:
             writer.writerows([val])
 
+# prevent from running with python2
+if platform.python_version().startswith('2'):
+   print('You are running with',platform.python_version(),'.')
+   print('Please run with python3.')
+   print('Exit.')
+   sys.exit()
 
 biasSupply=kei2400.keithley2400c()
 
