@@ -7,17 +7,19 @@ class keithley2400c:
         instlist=visa.ResourceManager()
         print(instlist.list_resources())
         self.kei2400c=instlist.open_resource("GPIB0::24::INSTR")
+        #self.kei2400c=instlist.open_resource("ASRL1::INSTR")
         self.timedelay=1
+        self.cmpl='100E-6' # global current protection
 
     def testIO(self):
-        message=self.kei2400c.ask('*IDN?')
+        message=self.kei2400c.query('*IDN?')
         print(message)
 
     def set_voltage(self,vol):
         if vol > 2.0:
             warnings.warn("Warning High Voltage!!!!")
 
-        self.kei2400c.write(":sense:current:protection 1E-6")
+        self.kei2400c.write(":sense:current:protection "+self.cmpl)
         self.kei2400c.write(":source:function voltage")
         self.kei2400c.write(":source:voltage:mode fixed")
         vols=self.show_voltage()
@@ -28,7 +30,7 @@ class keithley2400c:
     def show_voltage(self):
         self.kei2400c.write(":source:voltage:mode fixed")
         self.kei2400c.write(":form:elem voltage")
-        voltage=self.kei2400c.ask(":read?")
+        voltage=self.kei2400c.query(":read?")
         print("voltage [V]:  " + str(voltage))
         return float(str(voltage))
 
@@ -47,7 +49,7 @@ class keithley2400c:
         for mvol in range(int(mvols),int(mvole),int(mstep)):
             vol=mvol/1000 # mV -> V
             self.kei2400c.write(":source:voltage:level "+str(vol))
-            self.kei2400c.write(":sense:current:protection 1E-6")
+            self.kei2400c.write(":sense:current:protection "+self.cmpl)
             self.show_voltage()
             time.sleep(self.timedelay)
 
@@ -63,7 +65,7 @@ class keithley2400c:
         for mvol in range(int(mvols),int(mvole), -int(mstep)):
             vol=mvol/1000 # mV -> V
             self.kei2400c.write(":source:voltage:level "+str(vol))
-            self.kei2400c.write(":sense:current:protection 1E-6")
+            self.kei2400c.write(":sense:current:protection "+self.cmpl)
             self.show_voltage()
             time.sleep(self.timedelay)
 
@@ -72,16 +74,16 @@ class keithley2400c:
 
     def display_current(self):
         self.kei2400c.write(":sense:function 'current'")
-        self.kei2400c.write(":sense:current:range 1E-6")
+        self.kei2400c.write(":sense:current:range "+self.cmpl)
         self.kei2400c.write(":display:enable on")
         self.kei2400c.write(":display:digits 7")
         self.kei2400c.write(":form:elem current")
-        current=self.kei2400c.ask(":read?")
+        current=self.kei2400c.query(":read?")
         print("current [A]:  " + str(current))
 
         time.sleep(self.timedelay)
         self.kei2400c.write(":form:elem current")
-        current=self.kei2400c.ask(":read?")
+        current=self.kei2400c.query(":read?")
         return float(str(current))
 
     def output_on(self):
