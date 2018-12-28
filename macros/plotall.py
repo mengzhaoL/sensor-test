@@ -33,6 +33,6 @@ mg.SetTitle(name+";Bias Voltage [V];Measured Current [A]") # set the graph title
 mg.Draw("APL PMC PLC") # draw all the graphs using automatic coloring
 mg.GetHistogram().GetYaxis().SetRangeUser(1E-10,0.001); # y-axis range
 #mg.GetHistogram().GetXaxis().SetRangeUser(0,150); # x-axis range
-c.BuildLegend(0.4,0.4,0.6,0.8,"","PL") # generate the legend and define its position and style
+c.BuildLegend(0.4,0.8-0.05*len(fname),0.6,0.8,"","PL") # generate the legend and define its position and style
 
 c.Print(name+".pdf")
