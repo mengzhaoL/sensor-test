@@ -10,7 +10,7 @@ import sys
 def csv_writer(data,path):
     with open(path,"w") as csv_file:
         writer=csv.writer(csv_file,lineterminator='\n')
-        writer.writerow(['Bias Voltage[V]','Measure Voltage [V]','Meaure Current [A]'])
+        writer.writerow(['Bias Voltage[V]','Measured Voltage[V]','Measured Current[A]'])
         for val in data:
             writer.writerows([val])
 
