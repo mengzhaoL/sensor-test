@@ -10,7 +10,7 @@ import sys
 def csv_writer(data,path):
     with open(path,"w") as csv_file:
         writer=csv.writer(csv_file,lineterminator='\n')
-        writer.writerow(['Bias Voltage[V]','Measure Voltage [V]','Meaure Current [A]'])
+        writer.writerow(['Bias Voltage[V]','Measured Voltage[V]','Measured Current[A]'])
         for val in data:
             writer.writerows([val])
 
@@ -22,22 +22,31 @@ if platform.python_version().startswith('2'):
    sys.exit()
 
 biasSupply=kei2400.keithley2400c()
+biasSupply.set_current_protection(100E-6) # current protection
+positiveHV=False # sign of the voltage
+HVrange=10.0*1e3  # voltage scan range in mV in absolute value
 
 vols=[]
 mvols=[]
 current=[]
 
+if positiveHV:
+    sign=1
+else:
+    sign=-1
 iStart=int(0*1e3)
-iEnd=int(150.0*1e3)
-iStep=int(1.0*1e3)
+iEnd=int(sign*HVrange+sign*1)
+iStep=int(sign*1.0*1e3)
 for iBias in range(iStart,iEnd,iStep):
     biasSupply.output_on()
-    biasvol=iBias/1000
+    biasvol=iBias/1000 # mV to V
 	#if biasvol>2:
     #    break
     vols.append(biasvol)
     mvols.append(biasSupply.set_voltage(biasvol))
     current.append(biasSupply.display_current())
+    if biasSupply.hit_compliance():
+        break
 
 print("Bias Vols: "+str(vols))
 print("Measure vols: "+str(mvols))
@@ -50,3 +59,4 @@ filename="test.csv"
 csv_writer(dataarray.T,filename)
 
 biasSupply.set_voltage(0*1e3)
+biasSupply.output_off()

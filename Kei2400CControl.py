@@ -6,18 +6,21 @@ class keithley2400c:
     def __init__(self):
         instlist=visa.ResourceManager()
         print(instlist.list_resources())
-        self.kei2400c=instlist.open_resource("GPIB0::24::INSTR")
-        #self.kei2400c=instlist.open_resource("ASRL1::INSTR")
+        #self.kei2400c=instlist.open_resource("GPIB0::24::INSTR")
+        self.kei2400c=instlist.open_resource("ASRL1::INSTR")
         self.timedelay=0.5
-        self.cmpl='100E-6' # global current protection
+        self.cmpl='105E-6' # global current protection
 
     def testIO(self):
         message=self.kei2400c.query('*IDN?')
         print(message)
 
+    def set_current_protection(self,current):
+        self.cmpl=str(current)
+
     def set_voltage(self,vol):
-        if vol > 2.0:
-            warnings.warn("Warning High Voltage!!!!")
+        #if vol > 2.0:
+		#    warnings.warn("Warning High Voltage!!!!")
 
         self.kei2400c.write(":sense:current:protection "+self.cmpl)
         self.kei2400c.write(":source:function voltage")
@@ -85,6 +88,12 @@ class keithley2400c:
         self.kei2400c.write(":form:elem current")
         current=self.kei2400c.query(":read?")
         return float(str(current))
+
+    def hit_compliance(self):
+        tripped=int(str(self.kei2400c.query(":SENSE:CURRENT:PROTECTION:TRIPPED?")))
+        if tripped:
+            print("Hit the compliance "+self.cmpl+"A.")
+        return tripped
 
     def output_on(self):
         self.kei2400c.write(":output on")

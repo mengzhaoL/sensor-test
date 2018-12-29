@@ -1,5 +1,6 @@
 { // simple plotting script for quick preview of the scanIV.py output
-   TGraph *g = new TGraph("test.csv","%lf,%*lf,%lf");
+   TGraph *g = new TGraph("test.csv","%lf,%*lf,%lf"); // for positive HV
+   //TGraph *g = new TGraph("test.csv","-%lf,%*lf,-%lf"); // for negative HV
    g->Draw("apl");
    g->SetMarkerStyle(8);
    g->GetXaxis()->SetTitle("Bias Voltage [V]");
