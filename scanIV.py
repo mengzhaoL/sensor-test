@@ -22,7 +22,8 @@ if platform.python_version().startswith('2'):
    sys.exit()
 
 biasSupply=kei2400.keithley2400c()
-biasSupply.set_current_protection(100E-6) # current protection
+biasSupply.set_current_protection(100E-6) # current protection in A
+biasSupply.set_voltage_protection(500) # voltage protection in V
 positiveHV=False # sign of the voltage
 HVrange=10.0*1e3  # voltage scan range in mV in absolute value
 
@@ -49,7 +50,7 @@ for iBias in range(iStart,iEnd,iStep):
         break
 
 print("Bias Vols: "+str(vols))
-print("Measure vols: "+str(mvols))
+print("Measured vols: "+str(mvols))
 print("Current: "+str(current))
 
 data=[vols,mvols,current]
