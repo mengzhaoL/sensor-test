@@ -10,6 +10,7 @@ class keithley2400c:
         self.kei2400c=instlist.open_resource("ASRL1::INSTR")
         self.timedelay=0.5
         self.cmpl='105E-6' # global current protection
+        self.volrange='20' # voltage range
 
     def testIO(self):
         message=self.kei2400c.query('*IDN?')
@@ -18,12 +19,15 @@ class keithley2400c:
     def set_current_protection(self,current):
         self.cmpl=str(current)
 
+    def set_voltage_protection(self,vol):
+        self.volrange=str(vol)
+
     def set_voltage(self,vol):
         #if vol > 2.0:
 		#    warnings.warn("Warning High Voltage!!!!")
-
         self.kei2400c.write(":sense:current:protection "+self.cmpl)
         self.kei2400c.write(":source:function voltage")
+        self.kei2400c.write(":source:voltage:range "+self.volrange)
         self.kei2400c.write(":source:voltage:mode fixed")
         vols=self.show_voltage()
         self.sweep(vols,vol,1)

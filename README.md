@@ -4,8 +4,9 @@
 
 ### Installation
 
-Install python3 and pyvisa
+Install python3, pyvisa and matplotlib
 > pip3 install --user pyvisa
+> pip3 install --user matplotlib
 
 Download and install NI-VISA\
 http://www.ni.com/zh-cn/support/downloads/drivers/download.ni-visa.html
@@ -26,6 +27,9 @@ For example, in a python3 session:
 ### Perform a scan
 An I-V scan
 > python3 scanIV.py
+
+A C-V scan
+> python3 scanCV.py
 
 ### Visualize the results
 For a quick preview of the test.csv file
