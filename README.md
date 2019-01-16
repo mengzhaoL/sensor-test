@@ -5,7 +5,7 @@
 ### Installation
 
 Install python3, pyvisa and matplotlib
-> pip3 install --user pyvisa
+> pip3 install --user pyvisa \
 > pip3 install --user matplotlib
 
 Download and install NI-VISA\
@@ -18,17 +18,19 @@ Check out the sensor-test code.\
 Connect the instruments to PC via USB.\
 Check the VISA resource name in NI MAX.\
 Update the VISA resource names in the .py files if needed.\
-Call the testIO() function in python3 to check if your PC can talk to the instruments.\
-For example, in a python3 session:
-> import Kei2400CControl\
-> smu=Kei2400CControl.keithley2400c()\
-> smu.testIO()
+Check if your PC can talk to the instruments.\
+For example,
+> python3 Kei2400CControl.py
+should print out the identification information like KEITHLEY INSTRUMENTS...
 
 ### Perform a scan
-An I-V scan
+An I-V scan with a single source meter:
 > python3 scanIV.py
 
-A C-V scan
+(Note: Mac OS is not supported) An I-V scan with two source meters (Keithley 2410 as power supply and Keithley 2400 as current meter):
+> python3 scanIV2.py
+
+A C-V scan:
 > python3 scanCV.py
 
 ### Visualize the results
