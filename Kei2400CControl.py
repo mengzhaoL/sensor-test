@@ -3,14 +3,12 @@ import time
 import warnings
 
 class keithley2400c:
-    def __init__(self):
+    def __init__(self,resource_name):
         instlist=visa.ResourceManager()
         print(instlist.list_resources())
-        #self.kei2400c=instlist.open_resource("GPIB0::24::INSTR")
-        self.kei2400c=instlist.open_resource("ASRL1::INSTR")
+        self.kei2400c=instlist.open_resource(resource_name)
         self.timedelay=0.5
         self.cmpl='105E-6' # global current protection
-        self.volrange='20' # voltage range
 
     def testIO(self):
         message=self.kei2400c.query('*IDN?')
@@ -18,16 +16,16 @@ class keithley2400c:
 
     def set_current_protection(self,current):
         self.cmpl=str(current)
+        self.kei2400c.write(":sense:current:protection "+str(current))
 
     def set_voltage_protection(self,vol):
-        self.volrange=str(vol)
+        self.kei2400c.write(":source:voltage:range "+str(vol))
 
     def set_voltage(self,vol):
         #if vol > 2.0:
 		#    warnings.warn("Warning High Voltage!!!!")
         self.kei2400c.write(":sense:current:protection "+self.cmpl)
         self.kei2400c.write(":source:function voltage")
-        self.kei2400c.write(":source:voltage:range "+self.volrange)
         self.kei2400c.write(":source:voltage:mode fixed")
         vols=self.show_voltage()
         self.sweep(vols,vol,1)
@@ -109,10 +107,6 @@ class keithley2400c:
 
 
 if __name__=="__main__":
-    kei2400c=keithley2400c()
-    kei2400c.output_on()
-    kei2400c.set_voltage(1)
-    current=kei2400c.display_current()
-    print(current)
-    kei2400c.output_off()
+    kei2400c=keithley2400c("ASRL1::INSTR")
+    kei2400c.testIO()
 

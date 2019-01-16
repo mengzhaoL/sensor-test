@@ -21,7 +21,7 @@ if platform.python_version().startswith('2'):
    print('Exit.')
    sys.exit()
 
-biasSupply=kei2400.keithley2400c()
+biasSupply=kei2400.keithley2400c("ASRL1::INSTR")
 biasSupply.set_current_protection(100E-6) # current protection in A
 biasSupply.set_voltage_protection(500) # voltage protection in V
 positiveHV=False # sign of the voltage
