@@ -20,14 +20,15 @@ Check the VISA resource name in NI MAX.\
 Update the VISA resource names in the .py files if needed.\
 Check if your PC can talk to the instruments.\
 For example,
-> python3 Kei2400CControl.py
+> python3 Kei2400CControl.py \
 should print out the identification information like KEITHLEY INSTRUMENTS...
 
 ### Perform a scan
 An I-V scan with a single source meter:
 > python3 scanIV.py
 
-(Note: Mac OS is not supported) An I-V scan with two source meters (Keithley 2410 as power supply and Keithley 2400 as current meter):
+An I-V scan with two source meters (Keithley 2410 as power supply and Keithley 2400 as current meter):\
+(Note: Mac OS is not supported)
 > python3 scanIV2.py
 
 A C-V scan:
