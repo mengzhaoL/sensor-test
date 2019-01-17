@@ -22,17 +22,17 @@ if platform.python_version().startswith('2'):
    sys.exit()
 
 ### LCR meter settings
-lcr=KeyE4980AControl.keysighte4980a()
-lcr.set_frequency("1MHz")
+lcr=KeyE4980AControl.keysighte4980a("USB0::0x2A8D::0x2F01::MY46516486::INSTR")
+lcr.set_frequency("10kHz")
 lcr.set_voltage_level(0.1) # in V
 timedelay=1.0 # in second
 
 ### Source meter settings
-biasSupply=kei2400.keithley2400c()
+biasSupply=kei2400.keithley2400c("ASRL1::INSTR")
 biasSupply.set_current_protection(100E-6) # current protection in A
 biasSupply.set_voltage_protection(200) # voltage protection in V
-positiveHV=False # sign of the voltage
-HVrange=10.0*1e3  # voltage scan range in mV in absolute value
+positiveHV=True # sign of the voltage
+HVrange=80.0*1e3  # voltage scan range in mV in absolute value
 
 
 vols=[]
