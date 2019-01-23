@@ -38,3 +38,4 @@ class keysighte4980a:
 if __name__=="__main__":
     lcr=keysighte4980a("USB0::0x2A8D::0x2F01::MY46516486::INSTR")
     lcr.testIO()
+    lcr.set_trigger_internal()
