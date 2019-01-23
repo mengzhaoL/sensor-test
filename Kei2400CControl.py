@@ -7,7 +7,7 @@ class keithley2400c:
         instlist=visa.ResourceManager()
         print(instlist.list_resources())
         self.kei2400c=instlist.open_resource(resource_name)
-        self.timedelay=0.5
+        #self.timedelay=0.5
         self.cmpl='105E-6' # global current protection
 
     def testIO(self):
@@ -22,13 +22,11 @@ class keithley2400c:
         self.kei2400c.write(":source:voltage:range "+str(vol))
 
     def set_voltage(self,vol):
-        #if vol > 2.0:
-		#    warnings.warn("Warning High Voltage!!!!")
         self.kei2400c.write(":sense:current:protection "+self.cmpl)
         self.kei2400c.write(":source:function voltage")
         self.kei2400c.write(":source:voltage:mode fixed")
         vols=self.show_voltage()
-        self.sweep(vols,vol,1)
+        self.sweep(vols,vol,0.1)
         vols=self.show_voltage()
         return vols
 
@@ -48,47 +46,47 @@ class keithley2400c:
     def sweep_forward(self, vols, vole, step):
         # Conveter from V to mV
         mvols=vols*1000
-        mvole=vole*1000
+        mvole=vole*1000+1
         mstep=step*1000
 
         for mvol in range(int(mvols),int(mvole),int(mstep)):
             vol=mvol/1000 # mV -> V
             self.kei2400c.write(":source:voltage:level "+str(vol))
-            self.kei2400c.write(":sense:current:protection "+self.cmpl)
-            self.show_voltage()
-            time.sleep(self.timedelay)
+            #self.kei2400c.write(":sense:current:protection "+self.cmpl)
+            #self.show_voltage()
+            time.sleep(0.1)
 
-        self.kei2400c.write(":source:voltage:level "+str(vole))
-        self.show_voltage()
+        #self.kei2400c.write(":source:voltage:level "+str(vole))
+        #self.show_voltage()
 
     def sweep_backward(self, vols, vole, step):
         # Conveter from V to mV
         mvols=vols*1000
-        mvole=vole*1000
+        mvole=vole*1000-1
         mstep=step*1000
 
         for mvol in range(int(mvols),int(mvole), -int(mstep)):
             vol=mvol/1000 # mV -> V
             self.kei2400c.write(":source:voltage:level "+str(vol))
-            self.kei2400c.write(":sense:current:protection "+self.cmpl)
-            self.show_voltage()
-            time.sleep(self.timedelay*0.2)
+            #self.kei2400c.write(":sense:current:protection "+self.cmpl)
+            #self.show_voltage()
+            time.sleep(0.1)
 
-        self.kei2400c.write(":source:voltage:level "+str(vole))
-        self.show_voltage()
+        #self.kei2400c.write(":source:voltage:level "+str(vole))
+        #self.show_voltage()
 
     def display_current(self):
         self.kei2400c.write(":sense:function 'current'")
         self.kei2400c.write(":sense:current:range "+self.cmpl)
         self.kei2400c.write(":display:enable on")
         self.kei2400c.write(":display:digits 7")
+        #self.kei2400c.write(":form:elem current")
+        #current=self.kei2400c.query(":read?")
+
+        #time.sleep(0.5)
         self.kei2400c.write(":form:elem current")
         current=self.kei2400c.query(":read?")
         print("current [A]:  " + str(current))
-
-        time.sleep(self.timedelay)
-        self.kei2400c.write(":form:elem current")
-        current=self.kei2400c.query(":read?")
         return float(str(current))
 
     def hit_compliance(self):
@@ -105,6 +103,9 @@ class keithley2400c:
         self.kei2400c.write(":output off")
         print("Off")
 
+    def beep(self, freq=1046.50, duration=0.3):
+        self.kei2400c.write(":system:beeper "+str(freq)+", "+str(duration))
+        time.sleep(duration)
 
 if __name__=="__main__":
     kei2400c=keithley2400c("ASRL1::INSTR")

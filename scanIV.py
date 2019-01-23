@@ -23,9 +23,9 @@ if platform.python_version().startswith('2'):
 
 biasSupply=kei2400.keithley2400c("ASRL1::INSTR")
 biasSupply.set_current_protection(100E-6) # current protection in A
-biasSupply.set_voltage_protection(500) # voltage protection in V
+biasSupply.set_voltage_protection(200) # voltage protection in V
 positiveHV=False # sign of the voltage
-HVrange=10.0*1e3  # voltage scan range in mV in absolute value
+HVrange=150.0*1e3  # voltage scan range in mV in absolute value
 
 vols=[]
 mvols=[]
@@ -41,10 +41,9 @@ iStep=int(sign*1.0*1e3)
 for iBias in range(iStart,iEnd,iStep):
     biasSupply.output_on()
     biasvol=iBias/1000 # mV to V
-	#if biasvol>2:
-    #    break
     vols.append(biasvol)
     mvols.append(biasSupply.set_voltage(biasvol))
+    time.sleep(0.5)
     current.append(biasSupply.display_current())
     if biasSupply.hit_compliance():
         break
@@ -59,5 +58,7 @@ dataarray=np.array(data)
 filename="test.csv"
 csv_writer(dataarray.T,filename)
 
+print("Ramping down...")
 biasSupply.set_voltage(0*1e3)
 biasSupply.output_off()
+biasSupply.beep()
