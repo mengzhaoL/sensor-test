@@ -10,7 +10,7 @@ import time
 def csv_writer(data,path):
     with open(path,"w") as csv_file:
         writer=csv.writer(csv_file,lineterminator='\n')
-        writer.writerow(['Bias Voltage[V]','Measured Voltage[V]','Measured Capacitance[pF]','Capacitance^{-2}[pF]^{-2}'])
+        writer.writerow(['Bias Voltage[V]','Measured Voltage[V]','Measured Capacitance[pF]','Capacitance^{-2}[pF]^{-2}','Monitoring Current[A]'])
         for val in data:
             writer.writerows([val])
 
@@ -25,13 +25,13 @@ if platform.python_version().startswith('2'):
 lcr=KeyE4980AControl.keysighte4980a("USB0::0x2A8D::0x2F01::MY46516486::INSTR")
 lcr.set_frequency("10kHz")
 lcr.set_voltage_level(0.1) # in V
-timedelay=1.0 # in second
+timedelay=0.5 # in second
 
 ### Source meter settings
 biasSupply=kei2400.keithley2400c("ASRL1::INSTR")
 biasSupply.set_current_protection(100E-6) # current protection in A
 biasSupply.set_voltage_protection(200) # voltage protection in V
-positiveHV=True # sign of the voltage
+positiveHV=False # sign of the voltage
 HVrange=80.0*1e3  # voltage scan range in mV in absolute value
 
 
@@ -39,6 +39,7 @@ vols=[]
 mvols=[]
 pcap=[]
 invpcap2=[]
+current=[]
 
 if positiveHV:
     sign=1
@@ -58,6 +59,7 @@ for iBias in range(iStart,iEnd,iStep):
     vols.append(biasvol)
     mvols.append(biasSupply.set_voltage(biasvol))
     time.sleep(timedelay)
+    current.append(biasSupply.display_current())
     ipcap=lcr.get_capacitance()/1e-12
     pcap.append(ipcap)
     invpcap2.append(1.0/(ipcap*ipcap))
@@ -67,13 +69,16 @@ for iBias in range(iStart,iEnd,iStep):
 print("Bias Vols: "+str(vols))
 print("Measured vols: "+str(mvols))
 print("Capacitance: "+str(pcap))
+print("Current: "+str(current))
 
-data=[vols,mvols,pcap,invpcap2]
+data=[vols,mvols,pcap,invpcap2,current]
 dataarray=np.array(data)
 
 filename="test.csv"
 csv_writer(dataarray.T,filename)
 
+print("Ramping down...")
 lcr.set_trigger_internal()
 biasSupply.set_voltage(0*1e3)
 biasSupply.output_off()
+biasSupply.beep()
