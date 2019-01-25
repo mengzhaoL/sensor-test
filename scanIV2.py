@@ -53,6 +53,7 @@ for iBias in range(iStart,iEnd,iStep):
     #    break
     vols.append(biasvol)
     mvols.append(biasSupply.set_voltage(biasvol))
+    time.sleep(0.5)
     current_sig.append(curMeter.display_current())
     current_tot.append(biasSupply.display_current())
     if biasSupply.hit_compliance():
@@ -71,6 +72,8 @@ dataarray=np.array(data)
 filename="test.csv"
 csv_writer(dataarray.T,filename)
 
+print("Ramping down...")
 biasSupply.set_voltage(0*1e3)
 biasSupply.output_off()
 curMeter.output_off()
+biasSupply.beep()
