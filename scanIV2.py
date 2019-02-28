@@ -32,7 +32,9 @@ HVrange=3.0*1e3  # voltage scan range in mV in absolute value
 curMeter=kei2400.keithley2400c("ASRL4::INSTR")
 curMeter.set_current_protection(100E-6) # current protection in A
 curMeter.set_voltage_protection("min") # voltage protection in V
+curMeter.filter_off()
 
+time_start=time.time()
 vols=[]
 mvols=[]
 current_sig=[]
@@ -71,9 +73,16 @@ dataarray=np.array(data)
 
 filename="test.csv"
 csv_writer(dataarray.T,filename)
+time_top=time.time()
+print("Ramping up takes %3.0f s." % (time_top-time_start))
 
-print("Ramping down...")
+print("Now ramping down...")
 biasSupply.set_voltage(0*1e3)
 biasSupply.output_off()
 curMeter.output_off()
 biasSupply.beep()
+time_end=time.time()
+
+print("Ramping up time:\t%3.0f s" % (time_top-time_start))
+print("Ramping down time:\t%3.0f s" % (time_end-time_top))
+print("Total time:\t\t%3.0f m %2.0f s" % ((time_end-time_start)//60, (time_end-time_start)%60))
