@@ -107,6 +107,14 @@ class keithley2400c:
         self.kei2400c.write(":system:beeper "+str(freq)+", "+str(duration))
         time.sleep(duration)
 
+    def filter_on(self, count=20, mode="repeat"):
+        self.kei2400c.write(":sense:average:count "+str(count))
+        self.kei2400c.write(":sense:average:tcontrol "+mode) # repeat or moving
+        self.kei2400c.write(":sense:average:state on")
+
+    def filter_off(self):
+        self.kei2400c.write(":sense:average:state off")
+
 if __name__=="__main__":
     kei2400c=keithley2400c("ASRL1::INSTR")
     kei2400c.testIO()
