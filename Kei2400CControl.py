@@ -100,6 +100,9 @@ class keithley2400c:
     def filter_off(self):
         self.kei2400c.write(":sense:average:state off")
 
+    def __del__(self):
+        self.kei2400c.close()
+
 if __name__=="__main__":
     kei2400c=keithley2400c("ASRL1::INSTR")
     kei2400c.testIO()
