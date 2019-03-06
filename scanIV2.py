@@ -46,7 +46,7 @@ else:
     sign=-1
 iStart=int(0*1e3)
 iEnd=int(sign*HVrange+sign*1)
-iStep=int(sign*1.0*1e3)
+iStep=int(sign*2.0*1e3)
 biasSupply.output_on()
 curMeter.output_on()
 for iBias in range(iStart,iEnd,iStep):
