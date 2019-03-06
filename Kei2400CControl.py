@@ -7,7 +7,6 @@ class keithley2400c:
         instlist=visa.ResourceManager()
         print(instlist.list_resources())
         self.kei2400c=instlist.open_resource(resource_name)
-        #self.timedelay=0.5
         self.cmpl='105E-6' # global current protection
 
     def testIO(self):
@@ -48,16 +47,10 @@ class keithley2400c:
         mvols=vols*1000
         mvole=vole*1000+1
         mstep=step*1000
-
         for mvol in range(int(mvols),int(mvole),int(mstep)):
             vol=mvol/1000 # mV -> V
             self.kei2400c.write(":source:voltage:level "+str(vol))
-            #self.kei2400c.write(":sense:current:protection "+self.cmpl)
-            #self.show_voltage()
             time.sleep(0.1)
-
-        #self.kei2400c.write(":source:voltage:level "+str(vole))
-        #self.show_voltage()
 
     def sweep_backward(self, vols, vole, step):
         # Conveter from V to mV
@@ -68,22 +61,13 @@ class keithley2400c:
         for mvol in range(int(mvols),int(mvole), -int(mstep)):
             vol=mvol/1000 # mV -> V
             self.kei2400c.write(":source:voltage:level "+str(vol))
-            #self.kei2400c.write(":sense:current:protection "+self.cmpl)
-            #self.show_voltage()
             time.sleep(0.1)
-
-        #self.kei2400c.write(":source:voltage:level "+str(vole))
-        #self.show_voltage()
 
     def display_current(self):
         self.kei2400c.write(":sense:function 'current'")
         self.kei2400c.write(":sense:current:range "+self.cmpl)
         self.kei2400c.write(":display:enable on")
         self.kei2400c.write(":display:digits 7")
-        #self.kei2400c.write(":form:elem current")
-        #current=self.kei2400c.query(":read?")
-
-        #time.sleep(0.5)
         self.kei2400c.write(":form:elem current")
         current=self.kei2400c.query(":read?")
         print("current [A]:  " + str(current))
