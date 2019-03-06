@@ -7,6 +7,7 @@ class keithley2400c:
         instlist=visa.ResourceManager()
         print(instlist.list_resources())
         self.kei2400c=instlist.open_resource(resource_name)
+        self.kei2400c.timeout=25000
         self.cmpl='105E-6' # global current protection
 
     def testIO(self):
@@ -20,12 +21,12 @@ class keithley2400c:
     def set_voltage_protection(self,vol):
         self.kei2400c.write(":source:voltage:range "+str(vol))
 
-    def set_voltage(self,vol):
+    def set_voltage(self,vol,speed=1):
         self.kei2400c.write(":sense:current:protection "+self.cmpl)
         self.kei2400c.write(":source:function voltage")
         self.kei2400c.write(":source:voltage:mode fixed")
         vols=self.show_voltage()
-        self.sweep(vols,vol,0.1)
+        self.sweep(vols,vol,0.1,speed)
         vols=self.show_voltage()
         return vols
 
@@ -36,13 +37,13 @@ class keithley2400c:
         print("voltage [V]:  " + str(voltage))
         return float(str(voltage))
 
-    def sweep(self, vols, vole, step):
-        if vols < vole:
-            self.sweep_forward(vols,vole,step)
+    def sweep(self, vols, vole, step, speed):
+        if vols < vole: # vol start < vol end
+            self.sweep_forward(vols,vole,step,speed)
         else:
-            self.sweep_backward(vols,vole,step)
+            self.sweep_backward(vols,vole,step,speed)
 
-    def sweep_forward(self, vols, vole, step):
+    def sweep_forward(self, vols, vole, step,speed):
         # Conveter from V to mV
         mvols=vols*1000
         mvole=vole*1000+1
@@ -50,9 +51,9 @@ class keithley2400c:
         for mvol in range(int(mvols),int(mvole),int(mstep)):
             vol=mvol/1000 # mV -> V
             self.kei2400c.write(":source:voltage:level "+str(vol))
-            time.sleep(0.1)
+            time.sleep(0.1/speed)
 
-    def sweep_backward(self, vols, vole, step):
+    def sweep_backward(self, vols, vole, step,speed):
         # Conveter from V to mV
         mvols=vols*1000
         mvole=vole*1000-1
@@ -61,7 +62,7 @@ class keithley2400c:
         for mvol in range(int(mvols),int(mvole), -int(mstep)):
             vol=mvol/1000 # mV -> V
             self.kei2400c.write(":source:voltage:level "+str(vol))
-            time.sleep(0.1)
+            time.sleep(0.1/speed)
 
     def display_current(self):
         self.kei2400c.write(":sense:function 'current'")

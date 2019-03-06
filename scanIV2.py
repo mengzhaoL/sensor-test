@@ -77,7 +77,7 @@ time_top=time.time()
 print("Ramping up takes %3.0f s." % (time_top-time_start))
 
 print("Now ramping down...")
-biasSupply.set_voltage(0*1e3)
+biasSupply.set_voltage(0*1e3,5)
 biasSupply.output_off()
 curMeter.output_off()
 biasSupply.beep()
