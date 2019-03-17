@@ -25,7 +25,7 @@ if platform.python_version().startswith('2'):
 lcr=KeyE4980AControl.keysighte4980a("USB0::0x2A8D::0x2F01::MY46516486::INSTR")
 lcr.set_frequency("10kHz")
 lcr.set_voltage_level(0.1) # in V
-timedelay=0.5 # in second
+timedelay=2.0 # in second
 
 ### Source meter settings
 biasSupply=kei2400.keithley2400c("ASRL1::INSTR")

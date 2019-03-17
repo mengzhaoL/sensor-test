@@ -23,14 +23,14 @@ if platform.python_version().startswith('2'):
 
 # Source meter for power supply (Keithley 2410)
 biasSupply=kei2400.keithley2400c("ASRL1::INSTR")
-biasSupply.set_current_protection(100E-6) # current protection in A
+biasSupply.set_current_protection(800E-6) # current protection in A
 biasSupply.set_voltage_protection(500) # voltage protection in V
 positiveHV=False # sign of the voltage
 HVrange=3.0*1e3  # voltage scan range in mV in absolute value
 
 # Source meter as a current meter (Keithley 2400)
 curMeter=kei2400.keithley2400c("ASRL4::INSTR")
-curMeter.set_current_protection(100E-6) # current protection in A
+curMeter.set_current_protection(1E-6) # current protection in A
 curMeter.set_voltage_protection("min") # voltage protection in V
 curMeter.filter_off()
 
@@ -46,7 +46,7 @@ else:
     sign=-1
 iStart=int(0*1e3)
 iEnd=int(sign*HVrange+sign*1)
-iStep=int(sign*1.0*1e3)
+iStep=int(sign*2.0*1e3)
 biasSupply.output_on()
 curMeter.output_on()
 for iBias in range(iStart,iEnd,iStep):
@@ -77,7 +77,7 @@ time_top=time.time()
 print("Ramping up takes %3.0f s." % (time_top-time_start))
 
 print("Now ramping down...")
-biasSupply.set_voltage(0*1e3)
+biasSupply.set_voltage(0*1e3,5)
 biasSupply.output_off()
 curMeter.output_off()
 biasSupply.beep()
