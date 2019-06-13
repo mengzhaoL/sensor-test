@@ -66,7 +66,8 @@ class keithley2400c:
 
     def display_current(self):
         self.kei2400c.write(":sense:function 'current'")
-        self.kei2400c.write(":sense:current:range "+self.cmpl)
+        #self.kei2400c.write(":sense:current:range "+self.cmpl)
+        self.kei2400c.write(":sense:current:range:auto on")
         self.kei2400c.write(":display:enable on")
         self.kei2400c.write(":display:digits 7")
         self.kei2400c.write(":form:elem current")
